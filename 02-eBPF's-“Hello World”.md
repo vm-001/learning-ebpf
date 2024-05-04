@@ -121,3 +121,57 @@ b'     bash-5412    [001] .... 90432.904952: 0: bpf_trace_printk: Hello World'
 
 从 eBPF 程序获取信息的一个更好的办法是：使用 eBPF 映射。
 
+
+
+## BPF Maps
+
+映射（Map）是一种可以从 eBPF 程序和用户空间访问的数据结构。映射是区分 extended BPF 和 classic BPF 的重要特征之一。（通常情况下 ”eBPF maps“ 和 ”BPF maps“ 是可等价互换的）
+
+映射可以用于在多个 eBPF 程序之间共享数据，或者在用户空间应用程序与内核中运行的 eBPF 代码之间通信。典型的用法有：
+
+-   用户空间写入 eBPF 需要访问的配置信息
+-   eBPF 程序的状态存储，共享给其他 eBPF 程序访问
+-   eBPF 程序将结果或者指标写入到一个 map，由用户空间的应用进行展示
+
+Linux 的 [uapi/linux/bpf.h](https://elixir.bootlin.com/linux/v5.15.86/source/include/uapi/linux/bpf.h#L878) 文件中定义了各种类型的 BPF maps，它们的一些信息在[内核文档](https://docs.kernel.org/bpf/maps.html)里。一般来说，他们都是 key-value 存储，在本章中你将看到 hash tables、perf、ring buffers 和 eBPF arrays 的示例。
+
+一些 map 类型被定义为 arrays，这些类型以一个 4 字节的索引作为键类型。其他类型的 map 哈希表（hash tables），能使用任意数据类型作为键。
+
+一些 map 类型是针对特定操作进行的优化，比如 FIFO queues、FILO stacks、LRU 数据存储、最长前缀匹配以及 Bloom filters（布隆过滤器，快速判断数据是否存在）。
+
+一些 eBPF map 类型用于存储特定类型的对象。例如，sockmaps 和 devmaps 保存有关 sockets 和 network devices 的信息，并被网络相关的 eBPF 程序用于重定向流量。程序数组映射（program array map）以 eBPF 程序为索引，用于实现尾调用，一个程序调用另一个程序。甚至还有 map-of-maps 类型用于存储跟 maps 有关的信息。
+
+某些映射类型具有 per-CPU 的变体，也就是说，内核为该映射的每个 CPU 核心版本使用不同的内存块。这可能会让你产生对非 per-CPU 映射的并发担忧——多个 CPU 核心同时访问同一个映射。Kernel 5.1 添加了对某些映射的自旋锁支持，我们将会在第五章进行探讨。
+
+（略）
+
+
+
+## Hash Table Map
+
+略
+
+
+
+## Perf and Ring Buffer Maps
+
+
+
+## Function Calls
+
+
+
+## Tail Calls
+
+
+
+## 总结
+
+TBD
+
+
+
+## 练习
+
+略
+
